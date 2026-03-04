@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📱 SMS Forwarder"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Проверка разрешений..."
+        android:textSize="16sp"
+        android:padding="16dp"
+        android:background="@android:drawable/edit_text"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/checkPermsBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🔍 Проверить разрешения"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/startServiceBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🚀 Запустить сервис"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Настройки:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/settingsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Загружается..."
+        android:textSize="14sp"
+        android:padding="12dp"
+        android:background="@android:drawable/edit_text"/>
+
+</LinearLayout>
