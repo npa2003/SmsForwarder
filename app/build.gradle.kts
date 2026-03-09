@@ -1,3 +1,16 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+// Загружаем переменные из .env файла (ищем в корне проекта)
+val envFile = rootProject.file(".env")
+val envProperties = Properties()
+if (envFile.exists()) {
+    envProperties.load(FileInputStream(envFile))
+}
+
+// Получаем номер или используем значение по умолчанию
+val forwardNumber = envProperties.getProperty("FORWARD_NUMBER")
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -26,6 +39,16 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        buildConfig = true  // ЭТО ДОЛЖНО БЫТЬ!
+    }
+
+    defaultConfig {
+        // ... другие настройки
+        buildConfigField("String", "FORWARD_NUMBER", "\"+79169641310\"")
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

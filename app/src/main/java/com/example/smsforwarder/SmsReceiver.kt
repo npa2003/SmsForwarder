@@ -9,6 +9,7 @@ import android.provider.Telephony
 import android.telephony.SmsMessage
 import android.telephony.SubscriptionManager
 import android.util.Log
+import com.example.smsforwarder.BuildConfig
 
 class SmsReceiver : BroadcastReceiver() {
 
@@ -17,7 +18,7 @@ class SmsReceiver : BroadcastReceiver() {
         // 0 - первая SIM, 1 - вторая SIM (меняй под себя)
         val TARGET_SIM_SLOT = 0
         // Номер для пересылки
-        val FORWARD_NUMBER = "+79169641310"
+        val FORWARD_NUMBER = BuildConfig.FORWARD_NUMBER
     }
 
     /**

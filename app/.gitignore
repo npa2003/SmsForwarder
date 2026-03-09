@@ -1,1 +1,3 @@
 /build
+# Local environment files
+.env
