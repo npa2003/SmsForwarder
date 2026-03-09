@@ -1,7 +1,13 @@
 import java.io.FileInputStream
 import java.util.Properties
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 
-// Загружаем переменные из .env файла (ищем в корне проекта)
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
+
+// Загружаем переменные из .env файла
 val envFile = rootProject.file(".env")
 val envProperties = Properties()
 if (envFile.exists()) {
@@ -9,25 +15,24 @@ if (envFile.exists()) {
 }
 
 // Получаем номер или используем значение по умолчанию
-val forwardNumber = envProperties.getProperty("FORWARD_NUMBER")
-
-plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-}
+val forwardNumber = envProperties.getProperty("FORWARD_NUMBER") ?: "+79169641310"
 
 android {
     namespace = "com.example.smsforwarder"
     compileSdk = 35
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.example.smsforwarder"
-        minSdk = 28
-        targetSdk = 34
+        minSdk = 26
+        targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "FORWARD_NUMBER", "\"$forwardNumber\"")
     }
 
     buildTypes {
@@ -40,26 +45,29 @@ android {
         }
     }
 
-    buildFeatures {
-        buildConfig = true  // ЭТО ДОЛЖНО БЫТЬ!
-    }
-
-    defaultConfig {
-        // ... другие настройки
-        buildConfigField("String", "FORWARD_NUMBER", "\"+79169641310\"")
-    }
-
+    // 👇 ДОБАВЛЯЕМ ЭТОТ БЛОК (совместимость Java и Kotlin)
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
+    }
+
+    // Код для красивого имени APK
+    applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as BaseVariantOutputImpl }
+            .forEach { output ->
+                val newName = "SmsForwarder_v${variant.versionName}_${variant.name}.apk"
+                output.outputFileName = newName
+            }
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

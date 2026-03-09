@@ -51,10 +51,10 @@ class ForwarderService : Service() {
 
                 // Формируем текст для пересылки
                 val forwardText = buildString {
-                    append("📱 Переслано с $simName\n")
-                    append("📨 От: $sender\n")
-                    append("⏱ ${SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault()).format(Date(timestamp))}\n")
-                    append("📝 $body")
+                    append("${simName.take(3)}")
+                    append("$sender")
+                    append("⏱${SimpleDateFormat("dd.MM.yy|HH:mm", Locale.getDefault()).format(Date(timestamp))}\n")
+                    append("$body")
                 }
 
                 // Отправляем пересланное SMS
