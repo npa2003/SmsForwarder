@@ -3,7 +3,6 @@ package com.example.smsforwarder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
 
 class BootReceiver : BroadcastReceiver() {
@@ -27,11 +26,7 @@ class BootReceiver : BroadcastReceiver() {
     private fun startService(context: Context, action: String?) {
         try {
             val serviceIntent = Intent(context, ForwarderService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(serviceIntent)
-            } else {
-                context.startService(serviceIntent)
-            }
+            context.startService(serviceIntent)
             Log.i(TAG, "Service started after $action")
         } catch (e: Exception) {
             Log.e(TAG, "Failed to start service", e)

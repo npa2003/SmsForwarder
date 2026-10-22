@@ -137,11 +137,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startForwarderService() {
         val intent = Intent(this, ForwarderService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
+        startService(intent)
     }
 
     private fun stopForwarderService() {
