@@ -1,4 +1,4 @@
-package com.example.smsforwarder // замени на свой package!
+package com.example.smsforwarder
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -13,24 +13,28 @@ class BootReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            Log.d(TAG, "Device boot completed, starting foreground service...")
+        val action = intent.action
 
-            // Запускаем сервис как foreground
-            val serviceIntent = Intent(context, ForwarderService::class.java).apply {
-                action = "START_FOREGROUND"
-            }
+        if (action == Intent.ACTION_BOOT_COMPLETED ||
+            action == "android.intent.action.QUICKBOOT_POWERON" ||
+            action == Intent.ACTION_PACKAGE_REPLACED) {
+            
+            Log.d(TAG, "Event received: $action")
+            startService(context, action)
+        }
+    }
 
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(serviceIntent)
-                } else {
-                    context.startService(serviceIntent)
-                }
-                Log.i(TAG, "Service started after boot")
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to start service after boot", e)
+    private fun startService(context: Context, action: String?) {
+        try {
+            val serviceIntent = Intent(context, ForwarderService::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent)
+            } else {
+                context.startService(serviceIntent)
             }
+            Log.i(TAG, "Service started after $action")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to start service", e)
         }
     }
 }

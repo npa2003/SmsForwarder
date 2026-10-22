@@ -1,59 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center_horizontal">
+    android:padding="24dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="📱 SMS Forwarder"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
-
-    <TextView
-        android:id="@+id/statusText"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Проверка разрешений..."
-        android:textSize="16sp"
-        android:padding="16dp"
-        android:background="@android:drawable/edit_text"
-        android:layout_marginBottom="24dp"/>
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/checkPermsBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="🔍 Проверить разрешения"
-        android:layout_marginBottom="12dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SMS Forwarder"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
 
-    <Button
-        android:id="@+id/startServiceBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="🚀 Запустить сервис"
-        android:layout_marginBottom="12dp"/>
+        <!-- Кнопки управления сервисом -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Настройки:"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="8dp"/>
+            <Button
+                android:id="@+id/startBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Запуск"
+                android:layout_marginEnd="8dp"/>
 
-    <TextView
-        android:id="@+id/settingsText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Загружается..."
-        android:textSize="14sp"
-        android:padding="12dp"
-        android:background="@android:drawable/edit_text"/>
+            <Button
+                android:id="@+id/stopBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Остановка"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
 
-</LinearLayout>
+        <!-- Статус сервиса -->
+        <TextView
+            android:id="@+id/serviceStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сервис: не запущен"
+            android:textSize="14sp"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Номер для пересылки -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Номер для пересылки:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/forwardNumberEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:hint="+79XXXXXXXXX"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/saveNumberBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сохранить номер"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Статус разрешений -->
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Проверка разрешений..."
+            android:textSize="16sp"
+            android:padding="16dp"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/checkPermsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Проверить разрешения"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Настройки -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Настройки:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/settingsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"/>
+
+    </LinearLayout>
+</ScrollView>
