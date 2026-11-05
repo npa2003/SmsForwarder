@@ -77,6 +77,38 @@
             android:text="Сохранить номер"
             android:layout_marginBottom="24dp"/>
 
+        <!-- MAX-бот -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MAX-бот (дублирование SMS):"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/maxTokenEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="Токен MAX-бота"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/maxChatIdEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="Chat ID"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/saveMaxBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сохранить MAX настройки"
+            android:layout_marginBottom="24dp"/>
+
         <!-- Статус разрешений -->
         <TextView
             android:id="@+id/statusText"

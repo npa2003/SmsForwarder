@@ -44,9 +44,20 @@ class MainActivity : AppCompatActivity() {
         val checkPermsBtn = findViewById<Button>(R.id.checkPermsBtn)
         val saveNumberBtn = findViewById<Button>(R.id.saveNumberBtn)
         val forwardNumberEdit = findViewById<EditText>(R.id.forwardNumberEdit)
+        val maxTokenEdit = findViewById<EditText>(R.id.maxTokenEdit)
+        val maxChatIdEdit = findViewById<EditText>(R.id.maxChatIdEdit)
+        val saveMaxBtn = findViewById<Button>(R.id.saveMaxBtn)
 
         // Загружаем текущий номер в поле ввода
         forwardNumberEdit.setText(SettingsManager.forwardNumber)
+
+        // Загружаем MAX-настройки
+        SettingsManager.maxBotToken?.let { token ->
+            maxTokenEdit.setText(token)
+        }
+        if (SettingsManager.maxChatId > 0) {
+            maxChatIdEdit.setText(SettingsManager.maxChatId.toString())
+        }
 
         // Обновляем статус сервиса
         updateServiceStatus(serviceStatusText)
@@ -85,6 +96,37 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Введите номер телефона", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // Кнопка сохранения MAX-настроек
+        saveMaxBtn.setOnClickListener {
+            val token = maxTokenEdit.text.toString().trim()
+            val chatIdText = maxChatIdEdit.text.toString().trim()
+
+            if (token.isNotEmpty()) {
+                SettingsManager.maxBotToken = token
+            } else {
+                SettingsManager.maxBotToken = null
+            }
+
+            if (chatIdText.isNotEmpty()) {
+                try {
+                    SettingsManager.maxChatId = chatIdText.toLong()
+                } catch (e: NumberFormatException) {
+                    Toast.makeText(this, "Неверный Chat ID", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+            } else {
+                SettingsManager.maxChatId = 0L
+            }
+
+            val status = if (SettingsManager.isMaxConfigured()) {
+                "MAX: подключён"
+            } else {
+                "MAX: отключён"
+            }
+            updateSettingsDisplay(settingsText)
+            Toast.makeText(this, status, Toast.LENGTH_SHORT).show()
         }
     }
 
