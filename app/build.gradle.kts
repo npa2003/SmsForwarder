@@ -14,8 +14,9 @@ if (envFile.exists()) {
     envProperties.load(FileInputStream(envFile))
 }
 
-// Получаем номер или используем значение по умолчанию
-val forwardNumber = envProperties.getProperty("FORWARD_NUMBER") ?: "+79169641310"
+// Получаем настройки MAX-бота
+val maxBotToken = envProperties.getProperty("MAX_BOT_TOKEN") ?: ""
+val maxChatId = envProperties.getProperty("MAX_CHAT_ID") ?: "0"
 
 android {
     namespace = "com.example.smsforwarder"
@@ -32,7 +33,8 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
-        buildConfigField("String", "FORWARD_NUMBER", "\"$forwardNumber\"")
+        buildConfigField("String", "MAX_BOT_TOKEN", "\"$maxBotToken\"")
+        buildConfigField("String", "MAX_CHAT_ID", "\"$maxChatId\"")
     }
 
     buildTypes {
