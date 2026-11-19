@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GigaCodeAgentSettings">
+    <option name="autoApproveEdits" value="true" />
+    <option name="autoApprovedCommands">
+      <list>
+        <Execute>
+          <option name="pattern" value="curl -s -L --max-time 15 &quot;https://dev.max.ru/docs/api&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -ExecutionPolicy Bypass -File C:\temp\fetch_max_docs_full.ps1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -ExecutionPolicy Bypass -File C:\temp\fetch_max_links.ps1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -ExecutionPolicy Bypass -File C:\temp\fetch_max_relevant.ps1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -ExecutionPolicy Bypass -File C:\temp\fetch_max_api_detail.ps1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -ExecutionPolicy Bypass -File C:\temp\search_sms.ps1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -ExecutionPolicy Bypass -File C:\temp\search_sms2.ps1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -ExecutionPolicy Bypass -File C:\temp\fetch_partners.ps1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -ExecutionPolicy Bypass -File C:\temp\fetch_max_more.ps1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="curl -s -L &quot;https://www.google.com/search?q=MAX+messenger+Android+intent+action+send+message&quot; 2&gt;/dev/null" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="curl -s -L &quot;https://www.google.com/search?q=max.ru+Android+API+send+message+programmatically&quot; 2&gt;/dev/null" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="curl -s -L &quot;https://www.google.com/search?q=%D0%9C%D0%B0%D0%BA%D1%81+%D0%BC%D0%B5%D1%81%D1%81%D0%B5%D0%BD%D0%B4%D0%B6%D0%B5%D1%80+Android+intent&quot; 2&gt;/dev/null" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://www.google.com/search?q=MAX+messenger+Android+intent+action+send+message' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://www.google.com/search?q=max.ru+Android+package+name+intent+action' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://www.google.com/search?q=%D0%9C%D0%B0%D0%BA%D1%81+%D0%BC%D0%B5%D1%81%D1%81%D0%B5%D0%BD%D0%B4%D0%B6%D0%B5%D1%80+Android+API+%D0%BE%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C+%D1%87%D0%B0%D1%82' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://play.google.com/store/apps/details?id=ru.max.messenger' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://duckduckgo.com/html/?q=MAX+messenger+Android+intent+action+send+message' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://duckduckgo.com/html/?q=max.ru+Android+package+name+intent+action' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://www.bing.com/search?q=MAX+messenger+Android+intent+action+send+message+package+name' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://play.google.com/store/apps/details?id=ru.max.messenger&amp;hl=en' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/search?q=max+messenger+android+intent&amp;type=repositories' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $response = Invoke-WebRequest -Uri 'https://www.bing.com/search?q=max+messenger+android+intent+action+package+name+content+provider&amp;setlang=ru&amp;RDM=1' -UseBasicParsing; $response.Content | Select-String -Pattern 'b_title|b_content|href.*max.*messenger|package.*max' | Select-Object -First 30&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $response = Invoke-WebRequest -Uri 'https://www.bing.com/search?q=%D0%9C%D0%B0%D0%BA%D1%81+%D0%BC%D0%B5%D1%81%D1%81%D0%B5%D0%BD%D0%B4%D0%B6%D0%B5%D1%80+Android+intent+%D0%BE%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C+%D1%87%D0%B0%D1%82+%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%BD%D0%BE' -UseBasicParsing; $response.Content | Out-File -FilePath '$env:TEMP/max_bing_full.txt' -Encoding UTF8; (Get-Content '$env:TEMP/max_bing_full.txt') -replace '&lt;[^&gt;]+&gt;', ' ' -replace '\s+', ' ' | Select-String -Pattern 'max.*messenger|intent|package|action|chat|send' -AllMatches | ForEach-Object { $_.Line } | Select-Object -First 30&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://raw.githubusercontent.com' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$env:TEMP/max_search.ps1&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;C:\temp\max_search.ps1&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://max.ru/developers' -UseBasicParsing -TimeoutSec 10 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://play.google.com/store/apps/details?id=ru.max.messenger' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://www.bing.com/search?q=max+%D0%BC%D0%B5%D1%81%D1%81%D0%B5%D0%BD%D0%B4%D0%B6%D0%B5%D1%80+Android+%D0%BE%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C+%D1%87%D0%B0%D1%82+intent+uri+scheme&amp;setlang=ru' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://www.bing.com/search?q=max+messenger+ru.max.messenger+deep+link+android+url+scheme&amp;setlang=en' -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://play.google.com/store/apps/details?id=ru.max.messenger&amp;hl=en' -Headers @{'User-Agent'='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'} -UseBasicParsing | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Content &quot;C:\temp\max_bing_text.txt&quot; -Encoding UTF8" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://max.ru/privacy' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://max.ru/about' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://download.max.ru/' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://max.ru/developers' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://help.max.ru/' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://dev.max.ru/docs' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://dev.max.ru/' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://dev.max.ru/docs-api/' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://dev.max.ru/docs/open-api/' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://dev.max.ru/docs/' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Out-File -FilePath &quot;C:\temp\max_openapi_full.txt&quot; -Encoding UTF8" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://dev.max.ru/docs-api/use-cases/sending-messages/' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://dev.max.ru/docs/chatbots/bots-coding/prepare/' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://github.com/max-messenger/api-schema' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://dev.max.ru/docs/chatbots/' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="powershell -NoProfile -Command &quot;Invoke-WebRequest -Uri 'https://dev.max.ru/docs/chatbots/bots-create/create/' -Headers @{'User-Agent'='Mozilla/5.0'} -UseBasicParsing -TimeoutSec 15 | Select-Object -ExpandProperty Content&quot; 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git branch" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git status" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git checkout *" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git config *" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd *" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value=".\gradlew.bat assembleDebug" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="where *" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="dir &quot;C:\Program Files\Java&quot; 2&gt;$null" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="dir &quot;$env:LOCALAPPDATA\Android\Sdk&quot; 2&gt;$null" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="dir &quot;$env:LOCALAPPDATA\Programs\Android&quot; 2&gt;$null" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add *" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="winget search *" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="mkdir &quot;$env:LOCALAPPDATA\Android\Sdk\cmdline-tools&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Invoke-WebRequest -Uri &quot;https://dl.google.com/android/repository/commandlinetools-win-11076708_latest.zip&quot; -OutFile &quot;$env:TEMP\cmdline-tools.zip&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value=".\gradlew.bat assembleDebug --no-daemon 2&gt;&amp;1" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Select-String -Pattern &quot;BUILD|error:|FAILED&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Remove-Item &quot;M:\_DOCs\ZeroCode\Projects\SmsForwarder\app\src\main\java\com\example\smsforwarder\BootReceiver.kt&quot; -Force" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Remove-Item &quot;M:\_DOCs\ZeroCode\Projects\SmsForwarder\app\src\main\java\com\example\smsforwarder\ForwarderService.kt&quot; -Force" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value=".gradlew.bat clean *" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Select-String -Pattern &quot;e: file&quot;" />
+        </Execute>
+      </list>
+    </option>
+    <option name="autoApprovedReads">
+      <list>
+        <Read>
+          <option name="pattern" value="//*" />
+        </Read>
+        <Read>
+          <option name="pattern" value="$PROJECT_DIR$/../*" />
+        </Read>
+        <Read>
+          <option name="pattern" value="C:/temp/*" />
+        </Read>
+      </list>
+    </option>
+  </component>
+</project>

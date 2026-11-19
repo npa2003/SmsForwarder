@@ -4,7 +4,6 @@
 
     <!-- Разрешения для работы с SMS и телефоном -->
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <!-- Для Android 12+ -->
@@ -12,6 +11,10 @@
 
     <!-- Для уведомлений -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Интернет для MAX API -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Автозапуск после перезагрузки -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -46,11 +49,6 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-
-        <!-- Фоновый сервис -->
-        <service
-            android:name=".ForwarderService"
-            android:exported="false" />
 
         <!-- Автозапуск после перезагрузки -->
         <receiver

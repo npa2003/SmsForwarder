@@ -3,12 +3,13 @@ package com.example.smsforwarder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
-import android.net.Uri
+import android.os.Build
 import android.provider.Telephony
-import android.telephony.SmsManager
+import android.telephony.SubscriptionManager
 import android.util.Log
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class SmsReceiver : BroadcastReceiver() {
 
@@ -21,6 +22,9 @@ class SmsReceiver : BroadcastReceiver() {
             return
         }
 
+        // Инициализируем SettingsManager
+        SettingsManager.init(context)
+
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
         if (messages.isEmpty()) {
             return
@@ -28,147 +32,91 @@ class SmsReceiver : BroadcastReceiver() {
 
         val fullMessage = messages.joinToString("") { it.messageBody ?: "" }
         val sender = messages[0].originatingAddress ?: "Unknown"
+        val timestamp = System.currentTimeMillis()
 
         Log.d(TAG, "SMS from $sender: $fullMessage")
 
-        val cleanNumber = cleanPhoneNumber(sender)
-        val forwardNumber = SettingsManager.forwardNumber
-        val forwardText = buildForwardText(cleanNumber, fullMessage)
+        // Определяем SIM-карту
+        val simSlot = getSimSlotFromIntent(intent)
+        val simInfo = getSimInfo(context, simSlot)
+        val simName = simInfo ?: "SIM ${simSlot + 1}"
 
-        Log.d(TAG, "Forwarding to $forwardNumber: $forwardText")
-
-        sendSms(context, forwardNumber, forwardText)
-
-        // Удаляем отправленное сообщение с разными форматами номера
-        val phoneFormats = listOf(
-            forwardNumber,
-            "+$forwardNumber",
-            "8$forwardNumber",
-            "7$forwardNumber"
-        )
-
-        val now = System.currentTimeMillis()
-        val twoMinutesAgo = now - 2 * 60 * 1000
-
-        for (format in phoneFormats) {
-            if (deleteByUri(context, Telephony.Sms.Sent.CONTENT_URI, format, forwardText, twoMinutesAgo)) {
-                return
-            }
+        // Формируем текст для MAX-бота
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+        val maxText = buildString {
+            append("📱 SIM: $simName\n")
+            append("👤 От: $sender\n")
+            append("📅 ${dateFormat.format(Date(timestamp))}\n")
+            append("💬 $fullMessage")
         }
 
-        // Пробуем кастомные URI для Vivo/OPPO
-        val customUris = listOf(
-            Uri.parse("content://mms-sms/conversations?simple=true"),
-            Uri.parse("content://mms-sms/messages/"),
-            Uri.parse("content://mms-sms/threadConversations")
+        Log.d(TAG, "Sending to MAX: $maxText")
+
+        // Отправляем в MAX-бота, если настроен
+        Log.d(TAG, "MAX configured: ${SettingsManager.isMaxConfigured()}")
+        Log.d(TAG, "Token: ${SettingsManager.maxBotToken?.take(10)}...")
+        Log.d(TAG, "Chat ID: ${SettingsManager.maxChatId}")
+
+        if (SettingsManager.isMaxConfigured()) {
+            MaxBotClient.sendAsync(
+                token = SettingsManager.maxBotToken!!,
+                chatId = SettingsManager.maxChatId,
+                text = maxText,
+                onSuccess = { Log.d(TAG, "MAX message sent successfully") },
+                onError = { Log.e(TAG, "Failed to send MAX message", it) }
+            )
+        } else {
+            Log.w(TAG, "MAX not configured, message not sent")
+        }
+    }
+
+    private fun getSimSlotFromIntent(intent: Intent): Int {
+        val bundle = intent.extras ?: return -1
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            intent.getIntExtra(SubscriptionManager.EXTRA_SLOT_INDEX, -1).takeIf { it != -1 }?.let { return it }
+            intent.getIntExtra(SubscriptionManager.EXTRA_SUBSCRIPTION_INDEX, -1).takeIf { it != -1 }?.let { return it }
+        }
+
+        val possibleKeys = setOf(
+            "slot", "slot_id", "simSlot", "sim_slot", "simId", "simid",
+            "slotId", "slotIdx", "simnum", "phone", "subscription"
         )
 
-        for (uri in customUris) {
-            try {
-                val cursor = context.contentResolver.query(
-                    uri,
-                    arrayOf("_id", "address", "body", "date"),
-                    null,
-                    null,
-                    "date DESC"
-                )
-                cursor?.use { c ->
-                    while (c.moveToNext()) {
-                        val addressIdx = c.getColumnIndex("address")
-                        val bodyIdx = c.getColumnIndex("body")
-                        val idIdx = c.getColumnIndex("_id")
-                        val dateIdx = c.getColumnIndex("date")
-
-                        if (addressIdx >= 0 && bodyIdx >= 0 && idIdx >= 0 && dateIdx >= 0) {
-                            val address = c.getString(addressIdx)
-                            val messageBody = c.getString(bodyIdx)
-                            val date = c.getLong(dateIdx)
-                            val id = c.getLong(idIdx)
-
-                            if (address != null && messageBody != null && date >= twoMinutesAgo) {
-                                for (format in phoneFormats) {
-                                    if (address.contains(format) && messageBody.contains(forwardText.take(50))) {
-                                        val msgUri = Uri.parse("content://mms-sms/$id")
-                                        context.contentResolver.delete(msgUri, null, null)
-                                        Log.d(TAG, "Deleted via custom URI: $msgUri")
-                                        return
-                                    }
-                                }
-                            }
-                        }
-                    }
+        val keySet = bundle.keySet()
+        for (key in possibleKeys) {
+            if (keySet.contains(key)) {
+                try {
+                    val value = bundle.getInt(key, -1)
+                    if (value in 0..1) return value
+                } catch (e: Exception) {
+                    // Игнорируем
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to query custom URI", e)
             }
         }
+
+        return -1
     }
 
-    private fun cleanPhoneNumber(phone: String): String {
-        val digits = phone.filter { it.isDigit() }
-        return when {
-            digits.startsWith("7") && digits.length == 11 -> digits.substring(1)
-            digits.startsWith("8") && digits.length == 11 -> digits.substring(1)
-            digits.startsWith("7") && digits.length == 10 -> digits.substring(1)
-            else -> digits
-        }
-    }
+    private fun getSimInfo(context: Context, simSlot: Int): String? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) return null
 
-    private fun buildForwardText(cleanNumber: String, body: String): String {
-        val dateFormat = java.text.SimpleDateFormat("dd.MM|HH:mm", java.util.Locale.getDefault())
-        return "$cleanNumber ${dateFormat.format(java.util.Date(System.currentTimeMillis()))}\n$body"
-    }
-
-    private fun sendSms(context: Context, phoneNumber: String, message: String) {
-        try {
-            val smsManager = SmsManager.getDefault()
-            val parts = smsManager.divideMessage(message)
-            if (parts.size > 1) {
-                smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null)
-            } else {
-                smsManager.sendTextMessage(phoneNumber, null, message, null, null)
-            }
-            Log.i(TAG, "SMS forwarded to $phoneNumber")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error sending SMS to $phoneNumber", e)
-        }
-    }
-
-    private fun deleteByUri(
-        context: Context,
-        uri: Uri,
-        address: String,
-        body: String,
-        afterTime: Long
-    ): Boolean {
         return try {
-            val projection = arrayOf("_id", "address", "body", "date")
-            val selection = "address = ? AND date > ?"
-            val selectionArgs = arrayOf(address, afterTime.toString())
+            val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+            val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
 
-            context.contentResolver.query(uri, projection, selection, selectionArgs, "date DESC")?.use { cursor ->
-                var found = false
-                while (cursor.moveToNext()) {
-                    val idIdx = cursor.getColumnIndex("_id")
-                    val bodyIdx = cursor.getColumnIndex("body")
-
-                    if (idIdx >= 0 && bodyIdx >= 0) {
-                        val id = cursor.getLong(idIdx)
-                        val msgBody = cursor.getString(bodyIdx)
-
-                        if (msgBody == body || msgBody?.startsWith(body.take(30)) == true) {
-                            val msgUri = Uri.parse("content://sms/$id")
-                            context.contentResolver.delete(msgUri, null, null)
-                            Log.d(TAG, "Deleted sent message: $msgUri")
-                            found = true
-                        }
-                    }
+            subscriptionInfoList?.forEach { info ->
+                if (info.simSlotIndex == simSlot) {
+                    return info.carrierName?.toString() ?: "SIM ${simSlot + 1}"
                 }
-                found
-            } ?: false
+            }
+            null
+        } catch (e: SecurityException) {
+            Log.e(TAG, "No READ_PHONE_STATE permission", e)
+            null
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to delete via $uri", e)
-            false
+            Log.e(TAG, "Error getting SIM info", e)
+            null
         }
     }
 }
